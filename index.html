@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management System</title>
+
+<style>
+body {
+font-family: Arial, sans-serif;
+background: #f0f2f5;
+padding: 20px;
+}
+
+.container {
+max-width: 600px;
+margin: auto;
+background: white;
+padding: 20px;
+border-radius: 12px;
+}
+
+input, button {
+box-sizing: border-box;
+width: 100%;
+padding: 12px;
+margin: 6px 0;
+font-size: 16px;
+}
+
+button {
+background: #2563eb;
+color: white;
+border: none;
+border-radius: 6px;
+}
+
+.student {
+padding: 12px 0;
+border-bottom: 1px solid #ddd;
+overflow-wrap: anywhere;
+}
+
+.delete {
+background: #dc2626;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>Student Management</h1>
+
+<input id="studentId" placeholder="Student ID">
+<input id="studentName" placeholder="Student Name">
+<input id="studentCourse" placeholder="Course">
+
+<button onclick="addStudent()">Add Student</button>
+
+<h2>Student List</h2>
+
+<input
+id="search"
+placeholder="Search students..."
+oninput="showStudents()"
+>
+
+<div id="studentList"></div>
+</div>
+
+<script>
+let students = [];
+
+function addStudent() {
+const id = document.getElementById("studentId").value.trim();
+const name = document.getElementById("studentName").value.trim();
+const course = document.getElementById("studentCourse").value.trim();
+
+if (!id || !name || !course) {
+alert("Please fill in all fields.");
+return;
+}
+
+if (students.some(student => student.id === id)) {
+alert("This student ID already exists.");
+return;
+}
+
+students.push({ id, name, course });
+
+document.getElementById("studentId").value = "";
+document.getElementById("studentName").value = "";
+document.getElementById("studentCourse").value = "";
+
+showStudents();
+}
+
+function showStudents() {
+const list = document.getElementById("studentList");
+const query = document.getElementById("search").value.toLowerCase();
+
+list.replaceChildren();
+
+const filtered = students.filter(student =>
+(student.id + " " + student.name + " " + student.course)
+.toLowerCase().includes(query)
+);
+
+filtered.forEach(student => {
+const item = document.createElement("div");
+item.className = "student";
+
+const details = document.createElement("p");
+details.textContent =
+student.id + " | " + student.name + " | " + student.course;
+
+const button = document.createElement("button");
+button.className = "delete";
+button.textContent = "Delete";
+
+button.onclick = () => {
+students = students.filter(s => s.id !== student.id);
+showStudents();
+};
+
+item.append(details, button);
+list.appendChild(item);
+});
+
+if (filtered.length === 0) {
+list.textContent = "No students found.";
+}
+}
+</script>
+</body>
+</html>
