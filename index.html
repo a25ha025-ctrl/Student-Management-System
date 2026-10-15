@@ -1,136 +1,142 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Management System</title>
-
-<style>
-body {
-font-family: Arial, sans-serif;
-background: #f0f2f5;
-padding: 20px;
-}
-
-.container {
-max-width: 600px;
-margin: auto;
-background: white;
-padding: 20px;
-border-radius: 12px;
-}
-
-input, button {
-box-sizing: border-box;
-width: 100%;
-padding: 12px;
-margin: 6px 0;
-font-size: 16px;
-}
-
-button {
-background: #2563eb;
-color: white;
-border: none;
-border-radius: 6px;
-}
-
-.student {
-padding: 12px 0;
-border-bottom: 1px solid #ddd;
-overflow-wrap: anywhere;
-}
-
-.delete {
-background: #dc2626;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
-
 <body>
-<div class="container">
-<h1>Student Management</h1>
+  <aside class="sidebar">
+    <h2 class="logo">🎓 EduManage</h2>
 
-<input id="studentId" placeholder="Student ID">
-<input id="studentName" placeholder="Student Name">
-<input id="studentCourse" placeholder="Course">
+    <p class="menu-title">MENU</p>
+    <a href="#dashboard" class="nav-link active">▦ Dashboard</a>
+    <a href="#students" class="nav-link">♙ Students</a>
+    <a href="#courses" class="nav-link">▤ Courses</a>
+    <a href="#students" class="nav-link">⚙ Settings</a>
 
-<button onclick="addStudent()">Add Student</button>
+    <div class="sidebar-bottom">
+      <div class="avatar">Y</div>
+      <div>
+        <strong>Admin User</strong>
+        <small>Administrator</small>
+      </div>
+    </div>
+  </aside>
 
-<h2>Student List</h2>
+  <main class="main-content" id="dashboard">
+    <header class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="muted">Welcome back! Here's your student overview.</p>
+      </div>
+      <span class="date-badge" id="today"></span>
+    </header>
 
-<input
-id="search"
-placeholder="Search students..."
-oninput="showStudents()"
->
+    <section class="stats">
+      <article class="stat-card">
+        <div class="stat-icon purple">♙</div>
+        <p>Total Students</p>
+        <h2 id="totalStudents">0</h2>
+        <small>Registered students</small>
+      </article>
 
-<div id="studentList"></div>
-</div>
+      <article class="stat-card">
+        <div class="stat-icon blue">▤</div>
+        <p>Total Courses</p>
+        <h2 id="totalCourses">0</h2>
+        <small>Different courses</small>
+      </article>
 
-<script>
-let students = [];
+      <article class="stat-card">
+        <div class="stat-icon green">✓</div>
+        <p>Active Students</p>
+        <h2 id="activeStudents">0</h2>
+        <small>Currently active</small>
+      </article>
+    </section>
 
-function addStudent() {
-const id = document.getElementById("studentId").value.trim();
-const name = document.getElementById("studentName").value.trim();
-const course = document.getElementById("studentCourse").value.trim();
+    <section class="panel" id="students">
+      <div class="panel-heading">
+        <div>
+          <h2>Student Management</h2>
+          <p class="muted">Manage your student records below.</p>
+        </div>
+        <button class="primary-btn" id="showFormBtn">+ Add Student</button>
+      </div>
 
-if (!id || !name || !course) {
-alert("Please fill in all fields.");
-return;
-}
+      <form id="studentForm" class="student-form" hidden>
+        <h3>Add New Student</h3>
 
-if (students.some(student => student.id === id)) {
-alert("This student ID already exists.");
-return;
-}
+        <div class="form-grid">
+          <label>
+            Student ID
+            <input id="studentId" placeholder="STU004" required>
+          </label>
 
-students.push({ id, name, course });
+          <label>
+            Full Name
+            <input id="studentName" placeholder="Enter full name" required>
+          </label>
 
-document.getElementById("studentId").value = "";
-document.getElementById("studentName").value = "";
-document.getElementById("studentCourse").value = "";
+          <label>
+            Email
+            <input id="studentEmail" type="email"
+                   placeholder="student@example.com" required>
+          </label>
 
-showStudents();
-}
+          <label>
+            Course
+            <input id="studentCourse" placeholder="Java Programming" required>
+          </label>
+        </div>
 
-function showStudents() {
-const list = document.getElementById("studentList");
-const query = document.getElementById("search").value.toLowerCase();
+        <div class="form-actions">
+          <button type="button" class="secondary-btn" id="cancelBtn">
+            Cancel
+          </button>
+          <button type="submit" class="primary-btn">Save Student</button>
+        </div>
+        <p id="formMessage" role="status"></p>
+      </form>
 
-list.replaceChildren();
+      <div class="table-toolbar">
+        <h3>All Students</h3>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search students..."
+          aria-label="Search students"
+        >
+      </div>
 
-const filtered = students.filter(student =>
-(student.id + " " + student.name + " " + student.course)
-.toLowerCase().includes(query)
-);
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Email</th>
+              <th>Course</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentTable"></tbody>
+        </table>
+      </div>
 
-filtered.forEach(student => {
-const item = document.createElement("div");
-item.className = "student";
+      <p id="emptyMessage" class="empty-message" hidden>
+        No students found.
+      </p>
+    </section>
 
-const details = document.createElement("p");
-details.textContent =
-student.id + " | " + student.name + " | " + student.course;
-
-const button = document.createElement("button");
-button.className = "delete";
-button.textContent = "Delete";
-
-button.onclick = () => {
-students = students.filter(s => s.id !== student.id);
-showStudents();
-};
-
-item.append(details, button);
-list.appendChild(item);
-});
-
-if (filtered.length === 0) {
-list.textContent = "No students found.";
-}
-}
-</script>
+    <footer>
+      Student Management System · Built with HTML, CSS & JavaScript
+    </footer>
+  </main>
 </body>
 </html>
