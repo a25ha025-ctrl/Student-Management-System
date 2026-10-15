@@ -1,4 +1,6 @@
 # Student Management System
+- **Live Demo:** [View Website](https://a25ha025-ctrl.github.io/Student-Management-System/)
+- **Source Code:** [View on GitHub](https://github.com/a25ha025-ctrl/Student-Management-System)
 
 ## About
 A beginner web development project for managing student records.
