@@ -1,0 +1,164 @@
+
+/* ===== GENERAL STYLES ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #1e293b;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== HEADINGS ===== */
+h1 {
+    text-align: center;
+    color: #1d4ed8;
+    font-size: 30px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #334155;
+    font-size: 21px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* ===== INPUT FIELDS ===== */
+input {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 15px;
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    background: #ffffff;
+}
+
+/* ===== BUTTONS ===== */
+button {
+    display: block;
+    width: 100%;
+    padding: 13px 18px;
+    margin: 12px 0;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+/* ===== STUDENT LIST ===== */
+#studentList {
+    margin-top: 15px;
+}
+
+.student {
+    padding: 18px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #2563eb;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+
+.student:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+}
+
+.student p {
+    margin-bottom: 12px;
+    line-height: 1.7;
+    font-size: 15px;
+    color: #334155;
+}
+
+/* ===== DELETE BUTTON ===== */
+button.delete {
+    background: #ef4444;
+    margin-bottom: 0;
+}
+
+button.delete:hover {
+    background: #dc2626;
+}
+
+/* ===== EMPTY SEARCH MESSAGE ===== */
+#studentList:empty {
+    display: none;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 600px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .container {
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    h2 {
+        font-size: 19px;
+    }
+
+    input,
+    button {
+        font-size: 14px;
+    }
+}
