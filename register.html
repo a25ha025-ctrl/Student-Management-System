@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Student Registration | EduManage</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .registration-card {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      padding: 36px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .logo {
+      text-align: center;
+      color: #4f46e5;
+      font-size: 26px;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid #c7d2fe;
+      border-color: #4f46e5;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #4f46e5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #4f46e5;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .registration-card {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="registration-card">
+    <h1 class="logo">🎓 EduManage</h1>
+
+    <p class="subtitle">
+      Student Registration Form<br>
+      Enter your details to register.
+    </p>
+
+    <form id="registrationForm">
+      <div class="form-group">
+        <label for="studentId">Student ID</label>
+        <input
+          type="text"
+          id="studentId"
+          placeholder="e.g. STU001"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="studentName">Full Name</label>
+        <input
+          type="text"
+          id="studentName"
+          placeholder="Enter your full name"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="studentEmail">Email Address</label>
+        <input
+          type="email"
+          id="studentEmail"
+          placeholder="you@example.com"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="studentCourse">Select Course</label>
+        <select id="studentCourse" required>
+          <option value="">Choose your course</option>
+          <option value="Java Programming">Java Programming</option>
+          <option value="Web Development">Web Development</option>
+          <option value="Database Management">Database Management</option>
+          <option value="Information Technology">
+            Information Technology
+          </option>
+          <option value="Software Engineering">
+            Software Engineering
+          </option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <button type="submit">Register Now</button>
+
+      <p id="message" class="message" role="status" hidden></p>
+    </form>
+
+    <a class="back-link" href="index.html">
+      ← Back to Admin Dashboard
+    </a>
+  </main>
+
+  <script>
+    const registrationForm =
+      document.getElementById("registrationForm");
+
+    const message = document.getElementById("message");
+
+    registrationForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const id = document.getElementById("studentId")
+        .value.trim();
+
+      const name = document.getElementById("studentName")
+        .value.trim();
+
+      const email = document.getElementById("studentEmail")
+        .value.trim();
+
+      const course = document.getElementById("studentCourse")
+        .value;
+
+      // Read existing student records
+      let students = [];
+
+      try {
+        const savedData = localStorage.getItem("students");
+        students = savedData ? JSON.parse(savedData) : [];
+
+        if (!Array.isArray(students)) {
+          throw new Error("Invalid student data");
+        }
+      } catch (error) {
+        showMessage(
+          "Unable to read student records. Please contact the administrator.",
+          "error"
+        );
+        return;
+      }
+
+      // Prevent duplicate student IDs
+      const duplicate = students.some(function (student) {
+        return student.id.toLowerCase() === id.toLowerCase();
+      });
+
+      if (duplicate) {
+        showMessage(
+          "This Student ID is already registered. Please use another ID.",
+          "error"
+        );
+        return;
+      }
+
+      // Create the student record
+      const newStudent = {
+        id: id,
+        name: name,
+        email: email,
+        course: course,
+        status: "Active"
+      };
+
+      // Save the new record
+      students.push(newStudent);
+
+      try {
+        localStorage.setItem("students", JSON.stringify(students));
+      } catch (error) {
+        showMessage(
+          "Could not save your registration in this browser.",
+          "error"
+        );
+        return;
+      }
+
+      showMessage(
+        "Registration successful! Your details have been saved.",
+        "success"
+      );
+
+      registrationForm.reset();
+    });
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+      message.hidden = false;
+    }
+  </script>
+</body>
+</html>
