@@ -22,6 +22,7 @@ const defaultStudents = [
   }
 ];
 
+// Load students from localStorage
 function loadStudents() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -39,12 +40,14 @@ function loadStudents() {
 
 let students = loadStudents();
 
+// Get dashboard elements
 const studentForm = document.getElementById("studentForm");
 const studentTable = document.getElementById("studentTable");
 const searchInput = document.getElementById("searchInput");
 const formMessage = document.getElementById("formMessage");
 const emptyMessage = document.getElementById("emptyMessage");
 
+// Save students to localStorage
 function saveStudents() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
@@ -56,6 +59,7 @@ function saveStudents() {
   }
 }
 
+// Escape text before displaying it as HTML
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, character => ({
     "&": "&amp;",
@@ -66,24 +70,27 @@ function escapeHTML(value) {
   })[character]);
 }
 
+// Update dashboard statistics
 function updateDashboard() {
   document.getElementById("totalStudents").textContent =
     students.length;
 
   document.getElementById("totalCourses").textContent =
-    new Set(students.map(student => student.course.toLowerCase())).size;
+    new Set(
+      students.map(student => student.course.toLowerCase())
+    ).size;
 
-  // In this demo, every registered student is considered active.
   document.getElementById("activeStudents").textContent =
     students.length;
 }
 
+// Display students in the table
 function renderStudents() {
   const query = searchInput.value.trim().toLowerCase();
 
   const filteredStudents = students.filter(student =>
     [student.id, student.name, student.email, student.course]
-      .some(value => value.toLowerCase().includes(query))
+      .some(value => String(value).toLowerCase().includes(query))
   );
 
   studentTable.innerHTML = filteredStudents.map(student => `
@@ -105,9 +112,17 @@ function renderStudents() {
   `).join("");
 
   emptyMessage.hidden = filteredStudents.length !== 0;
+
+  if (query && filteredStudents.length === 0) {
+    emptyMessage.textContent = "No matching students found.";
+  } else {
+    emptyMessage.textContent = "No students found.";
+  }
+
   updateDashboard();
 }
 
+// Display today's date
 document.getElementById("today").textContent =
   new Date().toLocaleDateString("en-US", {
     month: "short",
@@ -115,18 +130,21 @@ document.getElementById("today").textContent =
     year: "numeric"
   });
 
+// Open the admin Add Student form
 document.getElementById("showFormBtn").addEventListener("click", () => {
   studentForm.hidden = false;
   formMessage.textContent = "";
   document.getElementById("studentId").focus();
 });
 
+// Cancel the admin Add Student form
 document.getElementById("cancelBtn").addEventListener("click", () => {
   studentForm.reset();
   studentForm.hidden = true;
   formMessage.textContent = "";
 });
 
+// Admin adds a student
 studentForm.addEventListener("submit", event => {
   event.preventDefault();
 
@@ -134,6 +152,11 @@ studentForm.addEventListener("submit", event => {
   const name = document.getElementById("studentName").value.trim();
   const email = document.getElementById("studentEmail").value.trim();
   const course = document.getElementById("studentCourse").value.trim();
+
+  if (!id || !name || !email || !course) {
+    formMessage.textContent = "Please fill in all fields.";
+    return;
+  }
 
   const duplicate = students.some(
     student => student.id.toLowerCase() === id.toLowerCase()
@@ -161,8 +184,10 @@ studentForm.addEventListener("submit", event => {
   renderStudents();
 });
 
+// Search students
 searchInput.addEventListener("input", renderStudents);
 
+// Delete a student
 studentTable.addEventListener("click", event => {
   const button = event.target.closest(".delete-btn");
 
@@ -179,7 +204,7 @@ studentTable.addEventListener("click", event => {
 
   if (!confirmed) return;
 
-  const previousStudents = [...students];
+  const previousStudents = students;
 
   students = students.filter(item => item.id !== studentId);
 
@@ -191,4 +216,13 @@ studentTable.addEventListener("click", event => {
   renderStudents();
 });
 
+// Update the table when another page changes localStorage
+window.addEventListener("storage", event => {
+  if (event.key === STORAGE_KEY || event.key === null) {
+    students = loadStudents();
+    renderStudents();
+  }
+});
+
+// Initial dashboard display
 renderStudents();
