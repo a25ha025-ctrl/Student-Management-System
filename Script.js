@@ -92,7 +92,14 @@ function renderStudents() {
     [student.id, student.name, student.email, student.course]
       .some(value => String(value).toLowerCase().includes(query))
   );
+function updateStudentCount() {
+    const students = JSON.parse(
+        localStorage.getItem("students") || "[]"
+    );
 
+    document.getElementById("totalStudents").textContent =
+        students.length;
+}
   studentTable.innerHTML = filteredStudents.map(student => `
     <tr>
       <td>${escapeHTML(student.id)}</td>
