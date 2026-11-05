@@ -59,7 +59,7 @@ function saveStudents() {
   }
 }
 
-// Escape text before displaying it as HTML
+// Escape HTML
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, character => ({
     "&": "&amp;",
@@ -72,34 +72,32 @@ function escapeHTML(value) {
 
 // Update dashboard statistics
 function updateDashboard() {
+
+  // Total Students
   document.getElementById("totalStudents").textContent =
     students.length;
 
+  // Total Courses
   document.getElementById("totalCourses").textContent =
     new Set(
       students.map(student => student.course.toLowerCase())
     ).size;
 
+  // Active Students
   document.getElementById("activeStudents").textContent =
     students.length;
 }
 
 // Display students in the table
 function renderStudents() {
+
   const query = searchInput.value.trim().toLowerCase();
 
   const filteredStudents = students.filter(student =>
     [student.id, student.name, student.email, student.course]
       .some(value => String(value).toLowerCase().includes(query))
   );
-function updateStudentCount() {
-    const students = JSON.parse(
-        localStorage.getItem("students") || "[]"
-    );
 
-    document.getElementById("totalStudents").textContent =
-        students.length;
-}
   studentTable.innerHTML = filteredStudents.map(student => `
     <tr>
       <td>${escapeHTML(student.id)}</td>
@@ -126,6 +124,7 @@ function updateStudentCount() {
     emptyMessage.textContent = "No students found.";
   }
 
+  // Update dashboard every time students change
   updateDashboard();
 }
 
@@ -137,21 +136,21 @@ document.getElementById("today").textContent =
     year: "numeric"
   });
 
-// Open the admin Add Student form
+// Open Add Student form
 document.getElementById("showFormBtn").addEventListener("click", () => {
   studentForm.hidden = false;
   formMessage.textContent = "";
   document.getElementById("studentId").focus();
 });
 
-// Cancel the admin Add Student form
+// Cancel form
 document.getElementById("cancelBtn").addEventListener("click", () => {
   studentForm.reset();
   studentForm.hidden = true;
   formMessage.textContent = "";
 });
 
-// Admin adds a student
+// Add a student
 studentForm.addEventListener("submit", event => {
   event.preventDefault();
 
@@ -196,11 +195,13 @@ searchInput.addEventListener("input", renderStudents);
 
 // Delete a student
 studentTable.addEventListener("click", event => {
+
   const button = event.target.closest(".delete-btn");
 
   if (!button) return;
 
   const studentId = button.dataset.id;
+
   const student = students.find(item => item.id === studentId);
 
   if (!student) return;
@@ -223,10 +224,13 @@ studentTable.addEventListener("click", event => {
   renderStudents();
 });
 
-// Update the table when another page changes localStorage
+// Update when another page changes localStorage
 window.addEventListener("storage", event => {
+
   if (event.key === STORAGE_KEY || event.key === null) {
+
     students = loadStudents();
+
     renderStudents();
   }
 });
