@@ -19,8 +19,8 @@
     <a href="#students" class="nav-link">⚙ Settings</a>
 
     <a href="register.html" class="nav-link">
-  ✍ Student Registration
-</a>
+      ✍ Student Registration
+    </a>
 
     <div class="sidebar-bottom">
       <div class="avatar">Y</div>
@@ -28,12 +28,7 @@
         <strong>Admin User</strong>
         <small>Administrator</small>
       </div>
-      <div class="stat-card">
-    <p>Total Students</p>
-    <h2 id="totalStudents">0</h2>
-    <p>Registered students</p>
-</div>
-    
+    </div>
   </aside>
 
   <main class="main-content" id="dashboard">
@@ -45,7 +40,9 @@
       <span class="date-badge" id="today"></span>
     </header>
 
+    <!-- Dashboard Statistics -->
     <section class="stats">
+
       <article class="stat-card">
         <div class="stat-icon purple">♙</div>
         <p>Total Students</p>
@@ -66,21 +63,28 @@
         <h2 id="activeStudents">0</h2>
         <small>Currently active</small>
       </article>
+
     </section>
 
+    <!-- Student Management -->
     <section class="panel" id="students">
+
       <div class="panel-heading">
         <div>
           <h2>Student Management</h2>
           <p class="muted">Manage your student records below.</p>
         </div>
-        <button class="primary-btn" id="showFormBtn">+ Add Student</button>
+
+        <button class="primary-btn" id="showFormBtn">
+          + Add Student
+        </button>
       </div>
 
       <form id="studentForm" class="student-form" hidden>
         <h3>Add New Student</h3>
 
         <div class="form-grid">
+
           <label>
             Student ID
             <input id="studentId" placeholder="STU004" required>
@@ -101,19 +105,26 @@
             Course
             <input id="studentCourse" placeholder="Java Programming" required>
           </label>
+
         </div>
 
         <div class="form-actions">
           <button type="button" class="secondary-btn" id="cancelBtn">
             Cancel
           </button>
-          <button type="submit" class="primary-btn">Save Student</button>
+
+          <button type="submit" class="primary-btn">
+            Save Student
+          </button>
         </div>
+
         <p id="formMessage" role="status"></p>
       </form>
 
+      <!-- Search -->
       <div class="table-toolbar">
         <h3>All Students</h3>
+
         <input
           type="search"
           id="searchInput"
@@ -122,6 +133,7 @@
         >
       </div>
 
+      <!-- Student Table -->
       <div class="table-wrapper">
         <table>
           <thead>
@@ -134,6 +146,7 @@
               <th>Action</th>
             </tr>
           </thead>
+
           <tbody id="studentTable"></tbody>
         </table>
       </div>
@@ -141,11 +154,13 @@
       <p id="emptyMessage" class="empty-message" hidden>
         No students found.
       </p>
+
     </section>
 
     <footer>
       Student Management System · Built with HTML, CSS & JavaScript
     </footer>
+
   </main>
 </body>
 </html>
