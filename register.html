@@ -58,8 +58,7 @@
       margin-bottom: 8px;
     }
 
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 13px;
       border: 1px solid #cbd5e1;
@@ -68,8 +67,7 @@
       background: white;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: 2px solid #c7d2fe;
       border-color: #4f46e5;
     }
@@ -130,7 +128,9 @@
 </head>
 
 <body>
+
   <main class="registration-card">
+
     <h1 class="logo">🎓 EduManage</h1>
 
     <p class="subtitle">
@@ -139,49 +139,35 @@
     </p>
 
     <form id="registrationForm">
+
       <div class="form-group">
         <label for="studentId">Student ID</label>
-        <input
-          type="text"
-          id="studentId"
-          placeholder="e.g. STU001"
-          required
-        >
+        <input type="text" id="studentId"
+          placeholder="e.g. STU004" required>
       </div>
 
       <div class="form-group">
         <label for="studentName">Full Name</label>
-        <input
-          type="text"
-          id="studentName"
-          placeholder="Enter your full name"
-          required
-        >
+        <input type="text" id="studentName"
+          placeholder="Enter your full name" required>
       </div>
 
       <div class="form-group">
         <label for="studentEmail">Email Address</label>
-        <input
-          type="email"
-          id="studentEmail"
-          placeholder="you@example.com"
-          required
-        >
+        <input type="email" id="studentEmail"
+          placeholder="you@example.com" required>
       </div>
 
       <div class="form-group">
         <label for="studentCourse">Select Course</label>
+
         <select id="studentCourse" required>
           <option value="">Choose your course</option>
           <option value="Java Programming">Java Programming</option>
           <option value="Web Development">Web Development</option>
           <option value="Database Management">Database Management</option>
-          <option value="Information Technology">
-            Information Technology
-          </option>
-          <option value="Software Engineering">
-            Software Engineering
-          </option>
+          <option value="Information Technology">Information Technology</option>
+          <option value="Software Engineering">Software Engineering</option>
           <option value="Other">Other</option>
         </select>
       </div>
@@ -189,20 +175,36 @@
       <button type="submit">Register Now</button>
 
       <p id="message" class="message" role="status" hidden></p>
+
     </form>
 
     <a class="back-link" href="index.html">
       ← Back to Admin Dashboard
     </a>
+
   </main>
 
   <script>
+
+    // Same storage key as dashboard
+    const STORAGE_KEY = "edumanage_students";
+
     const registrationForm =
       document.getElementById("registrationForm");
 
-    const message = document.getElementById("message");
+    const message =
+      document.getElementById("message");
 
-    registrationForm.addEventListener("submit", function (event) {
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+      message.hidden = false;
+    }
+
+
+    registrationForm.addEventListener("submit", function(event) {
+
       event.preventDefault();
 
       const id = document.getElementById("studentId")
@@ -217,38 +219,55 @@
       const course = document.getElementById("studentCourse")
         .value;
 
-      // Read existing student records
+
       let students = [];
 
       try {
-        const savedData = localStorage.getItem("students");
-        students = savedData ? JSON.parse(savedData) : [];
+
+        // Read the correct storage key
+        const savedData = localStorage.getItem(STORAGE_KEY);
+
+        if (savedData !== null) {
+          students = JSON.parse(savedData);
+        } else {
+          // Recover old registration records if present
+          const oldData = localStorage.getItem("students");
+
+          if (oldData !== null) {
+            students = JSON.parse(oldData);
+          }
+        }
 
         if (!Array.isArray(students)) {
           throw new Error("Invalid student data");
         }
-      } catch (error) {
-        showMessage(
-          "Unable to read student records. Please contact the administrator.",
-          "error"
-        );
+
+      } catch(error) {
+
+        showMessage("Unable to load student records.", "error");
+
+        console.error(error);
         return;
       }
 
-      // Prevent duplicate student IDs
-      const duplicate = students.some(function (student) {
-        return student.id.toLowerCase() === id.toLowerCase();
-      });
+
+      // Check duplicate ID
+      const duplicate = students.some(student =>
+        String(student.id || "").toLowerCase() === id.toLowerCase()
+      );
 
       if (duplicate) {
+
         showMessage(
-          "This Student ID is already registered. Please use another ID.",
+          "This Student ID is already registered.",
           "error"
         );
+
         return;
       }
 
-      // Create the student record
+
+      // Create new student
       const newStudent = {
         id: id,
         name: name,
@@ -257,32 +276,42 @@
         status: "Active"
       };
 
-      // Save the new record
+
+      // Add student
       students.push(newStudent);
 
+
+      // Save using the correct key
       try {
-        localStorage.setItem("students", JSON.stringify(students));
-      } catch (error) {
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(students)
+        );
+
+      } catch(error) {
+
         showMessage(
-          "Could not save your registration in this browser.",
+          "Could not save student information.",
           "error"
         );
+
+        console.error(error);
         return;
       }
 
+
+      // Success message
       showMessage(
-        "Registration successful! Your details have been saved.",
+        "Registration successful! Your student details have been saved.",
         "success"
       );
 
       registrationForm.reset();
+
     });
 
-    function showMessage(text, type) {
-      message.textContent = text;
-      message.className = "message " + type;
-      message.hidden = false;
-    }
   </script>
+
 </body>
 </html>
